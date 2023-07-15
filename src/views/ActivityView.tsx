@@ -3,7 +3,7 @@ type ActivityViewProps = {
 };
 
 function ActivityView({ activity }: ActivityViewProps) {
-  return <div>{activity.project}</div>;
+  return <div>{activity.project.name}</div>;
 }
 
 export default ActivityView;

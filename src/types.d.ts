@@ -1,21 +1,24 @@
 type Day = {
+  id?: number;
   date: string;
-  activites: Activity[];
+  activities?: Activity[];
 };
 
 type Activity = {
   id: number;
-  project: string;
-  task: string;
-  log: ActivityEvent[];
+  dayId: number;
+  description: string;
+  project: Project;
+  task: Task;
 };
 
-enum ActivityState {
-  Closed = 0,
-  Open = 1,
-}
+type Project = {
+  id: number;
+  name: string;
+  tasks: Task[];
+};
 
-type ActivityEvent = {
-  state: ActivityState;
-  time: Date;
+type Task = {
+  id: number;
+  name: string;
 };
