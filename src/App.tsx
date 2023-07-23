@@ -9,9 +9,9 @@ function App() {
   });
 
   useEffect(() => {
-    invoke("get_day", {day: "2023-07-06"}).then((day) => {
+    invoke("get_day", {date: "2023-07-06"}).then((day) => {
       setDay(day as Day);
-    });
+    }).catch(error => console.log(error));
   }, []);
 
   if (day.activities) {
