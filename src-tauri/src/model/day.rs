@@ -1,6 +1,6 @@
 use crate::model::task::Task;
 use crate::model::traits::{Model, CRUD};
-use rusqlite::{Connection, Error, Row, Rows};
+use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
