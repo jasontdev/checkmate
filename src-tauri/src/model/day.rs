@@ -19,6 +19,7 @@ impl Day {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn drop_table(connection: &Connection) -> Result<(), Error> {
         connection.execute("DROP TABLE day", ())?;
         Ok(())
