@@ -1,4 +1,4 @@
-use crate::model::traits::{Model, CRUD};
+use crate::model::traits::Model;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
