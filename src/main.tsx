@@ -7,6 +7,6 @@ await invoke("create_tables")
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <App />
+      <App />
   </React.StrictMode>
 );

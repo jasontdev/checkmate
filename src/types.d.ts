@@ -1,7 +1,7 @@
 type Day = {
   id?: number;
   date: string;
-  activities?: Activity[];
+  activities: Activity[];
 };
 
 type Activity = {

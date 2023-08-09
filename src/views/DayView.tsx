@@ -1,9 +1,12 @@
 import ActivityList from "../components/ActivityList";
-import DayNavBar from "../ui/DayNavBar";
+import DayNavBar from "../components/DayNavBar.tsx";
+import NoActivities from "../components/NoActivities.tsx";
+import React from "react";
+import Container from "../ui/Container.tsx";
 
 type DayViewProps = {
   day: Day;
-  setDate: React.Dispatch<React.SetStateAction<string>>
+  setDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
 function addDaysToDateString(dateString: string, daysToAdd: number) {
@@ -13,6 +16,8 @@ function addDaysToDateString(dateString: string, daysToAdd: number) {
   return date.toDateString();
 }
 
+function handleNewActivityClick() {
+}
 
 function DayView({ day, setDate }: DayViewProps) {
   function onNextDateClick() {
@@ -24,12 +29,12 @@ function DayView({ day, setDate }: DayViewProps) {
   }
 
   return (
-    <div>
+    <Container>
       <DayNavBar date={day.date}  onNextDateClick={onNextDateClick} onPrevDateClick={onPrevDateClick}/>
-      {day.activities ? (
+      {day.activities.length > 0 ? (
         <ActivityList activities={day.activities} />
-      ) : null}
-    </div>
+      ) : <NoActivities handleNewActivityClick={handleNewActivityClick} />}
+    </Container>
   );
 }
 
