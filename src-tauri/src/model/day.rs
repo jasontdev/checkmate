@@ -1,11 +1,11 @@
 use crate::model::task::Task;
-use crate::model::traits::{CRUD};
+use crate::model::traits::CRUD;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Day {
-    pub id: i32,
+    pub id: i64,
     pub date: String,
     pub activities: Vec<Task>,
 }
@@ -25,7 +25,7 @@ impl Day {
         Ok(())
     }
 
-    pub fn find_by_date(connection: &Connection, date: String) -> Result<Option<Day>, Error> {
+    pub fn find_or_create(connection: &Connection, date: String) -> Result<Day, Error> {
         let mut statement = connection.prepare("SELECT id, date FROM day WHERE date=(?)")?;
         let day = statement.query_row([&date], |row| {
             Ok(Day {
@@ -36,7 +36,7 @@ impl Day {
         });
 
         match day {
-            Ok(day) => Ok(Some(day)),
+            Ok(day) => Ok(day),
             Err(_) => {
                 let new_day = Day {
                     id: 0,
@@ -45,7 +45,7 @@ impl Day {
                 };
 
                 match new_day.create(connection) {
-                    Ok(d) => Ok(Some(d)),
+                    Ok(d) => Ok(d),
                     Err(error) => Err(error),
                 }
             }
@@ -57,12 +57,12 @@ impl CRUD for Day {
     fn create(&self, connection: &Connection) -> Result<Self, Error> {
         let mut statement =
             connection.prepare("INSERT INTO day (date) VALUES (?1) RETURNING id")?;
-        statement.query_row([&self.date], |row| {
-            Ok(Day {
-                id: row.get(0)?,
-                date: self.date.to_string(),
-                activities: vec![],
-            })
+        statement.execute([&self.date])?;
+
+        Ok(Day {
+            id: connection.last_insert_rowid(),
+            date: self.date.to_string(),
+            activities: vec![],
         })
     }
 }

@@ -1,10 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use model::traits::CRUD;
 use rusqlite::{Connection, Error};
 use tauri::{Manager, State};
 
 use model::Day;
+use model::Task;
 
 mod model;
 
@@ -15,19 +17,15 @@ pub struct AppState {
 #[tauri::command]
 fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
     // should insert a new row where the requested day does not exist
-    match Day::find_by_date(
+    match Day::find_or_create(
         app_state.db.lock().unwrap().as_ref().unwrap(),
         date.to_string(),
     ) {
-        Ok(day) => match day {
-            // TODO: replace with call to create()
-            None => Ok(Day {
-                id: 0,
-                date: date.to_string(),
-                activities: vec![],
-            }),
-            Some(day) => Ok(day),
-        },
+        Ok(day) => Ok(Day {
+            id: day.id,
+            date: day.date,
+            activities: day.activities,
+        }),
         Err(error) => Err(error.to_string()),
     }
 }
@@ -36,6 +34,14 @@ fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
 fn create_tables(app_state: State<AppState>) -> Result<(), String> {
     match Day::create_table(app_state.db.lock().unwrap().as_ref().unwrap()) {
         Ok(_) => Ok(()),
+        Err(error) => Err(error.to_string()),
+    }
+}
+
+fn save_task(app_state: State<AppState>, task: Task) -> Result<Task, String> {
+    let connection = app_state.db.lock().unwrap();
+    match task.create(&connection.as_ref().unwrap()) {
+        Ok(task) => Ok(task),
         Err(error) => Err(error.to_string()),
     }
 }
