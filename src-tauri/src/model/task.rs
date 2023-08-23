@@ -1,6 +1,6 @@
 use crate::model::function::Function;
 use crate::model::project::Project;
-use crate::model::traits::CRUD;
+use crate::model::traits::Entity;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
@@ -13,7 +13,7 @@ pub struct Task {
     pub task: Option<Function>,
 }
 
-impl CRUD for Task {
+impl Entity for Task {
     fn create(&self, connection: &Connection) -> Result<Self, Error> {
         let mut statement = connection
             .prepare("INSERT INTO task (day_id, description) VALUES (?1, ?2) RETURNING id")?;

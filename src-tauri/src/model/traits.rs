@@ -5,6 +5,6 @@ pub trait Model {
     fn drop_table(&self, connection: &Connection) -> Result<(), Error>;
 }
 
-pub trait CRUD: Sized {
+pub trait Entity: Sized {
     fn create(&self, connection: &Connection) -> Result<Self, Error>;
 }

@@ -1,5 +1,5 @@
 use crate::model::task::Task;
-use crate::model::traits::CRUD;
+use crate::model::traits::Entity;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
@@ -53,7 +53,7 @@ impl Day {
     }
 }
 
-impl CRUD for Day {
+impl Entity for Day {
     fn create(&self, connection: &Connection) -> Result<Self, Error> {
         let mut statement =
             connection.prepare("INSERT INTO day (date) VALUES (?1) RETURNING id")?;

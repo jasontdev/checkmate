@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use model::traits::CRUD;
+use model::traits::Entity;
 use rusqlite::{Connection, Error};
 use tauri::{Manager, State};
 
@@ -16,7 +16,6 @@ pub struct AppState {
 
 #[tauri::command]
 fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
-    // should insert a new row where the requested day does not exist
     match Day::find_or_create(
         app_state.db.lock().unwrap().as_ref().unwrap(),
         date.to_string(),
