@@ -2,7 +2,7 @@ use crate::model::traits::Model;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Function {
     pub id: i32,
     pub name: String,

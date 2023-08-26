@@ -3,6 +3,7 @@
 
 use model::traits::Entity;
 use rusqlite::{Connection, Error};
+use tauri::Window;
 use tauri::{Manager, State};
 
 use model::Day;
@@ -30,6 +31,28 @@ fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
 }
 
 #[tauri::command]
+fn update_day(_app_state: State<AppState>, window: Window, day: Day) -> Result<Day, String> {
+    let event_name = format!("day_{}_updated", str::replace(&day.date, " ", "_"));
+
+    window
+        .emit(
+            &event_name,
+            Day {
+                id: day.id,
+                date: day.date.clone(),
+                activities: day.activities.clone(),
+            },
+        )
+        .unwrap();
+
+    Ok(Day {
+        id: day.id,
+        date: day.date,
+        activities: day.activities,
+    })
+}
+
+#[tauri::command]
 fn create_tables(app_state: State<AppState>) -> Result<(), String> {
     match Day::create_table(app_state.db.lock().unwrap().as_ref().unwrap()) {
         Ok(_) => Ok(()),
@@ -50,7 +73,7 @@ fn main() -> Result<(), Error> {
         .manage(AppState {
             db: Default::default(),
         })
-        .invoke_handler(tauri::generate_handler![create_tables, get_day])
+        .invoke_handler(tauri::generate_handler![create_tables, get_day, update_day])
         .setup(|app| {
             let handle = app.handle();
             let app_state: State<AppState> = handle.state();

@@ -1,17 +1,18 @@
+import { invoke } from "@tauri-apps/api";
 import Button from "../ui/Button";
 import Container from "../ui/Container";
 import { type DayViewNav } from "../views/DayView";
 
 type CreateActivityProps = {
-  dayId: number;
+  day: Day;
   dayViewNav: DayViewNav;
-  updateDay: () => void;
 };
 
-function CreateActivity({ dayViewNav, updateDay }: CreateActivityProps) {
+function CreateActivity({ dayViewNav, day }: CreateActivityProps) {
   function handleSaveButtonClick() {
-    updateDay();
-    dayViewNav.toActivities();
+    invoke("update_day", {
+      day: day 
+    });
   }
 
   return (

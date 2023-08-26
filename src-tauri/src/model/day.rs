@@ -3,7 +3,7 @@ use crate::model::traits::Entity;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Day {
     pub id: i64,
     pub date: String,
