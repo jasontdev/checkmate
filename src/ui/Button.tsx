@@ -7,7 +7,12 @@ type BlueButtonProps = {
 function Button({ title, solid, onClick }: BlueButtonProps) {
   if (solid) {
     return (
-      <button className="rounded bg-red-500 px-2 py-1 font-bold text-white">
+      <button
+        className="rounded bg-red-500 px-2 py-1 font-bold text-white"
+        onClick={() => {
+          onClick();
+        }}
+      >
         {title}
       </button>
     );
@@ -16,7 +21,9 @@ function Button({ title, solid, onClick }: BlueButtonProps) {
   return (
     <button
       className="rounded px-2 py-1 font-bold text-red-500"
-      onClick={() => onClick()}
+      onClick={() => {
+        onClick();
+      }}
     >
       {title}
     </button>

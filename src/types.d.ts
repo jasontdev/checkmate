@@ -1,5 +1,5 @@
 type Day = {
-  id?: number;
+  id: number;
   date: string;
   activities: Activity[];
 };

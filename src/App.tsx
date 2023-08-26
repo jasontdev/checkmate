@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import DayView from "./views/DayView";
+import { DayView } from "./views/DayView";
 import {invoke} from "@tauri-apps/api/tauri";
 
 enum Views {
@@ -8,6 +8,7 @@ enum Views {
 
 function App() {
   const [day, setDay] = useState<Day>({
+    id: -1,
     date: "",
     activities: [],
   });

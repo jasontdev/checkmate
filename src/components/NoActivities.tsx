@@ -1,15 +1,21 @@
 import Button from "../ui/Button.tsx";
+import { type DayViewNav } from "../views/DayView.tsx";
 
 type NoActivitiesProps = {
-  handleNewActivityClick: () => void;
-}
-function NoActivities({handleNewActivityClick}: NoActivitiesProps) {
+  dayViewNav: DayViewNav
+};
+
+function NoActivities({ dayViewNav }: NoActivitiesProps) {
   return (
-    <div className="flex flex-col items-center justify-around h-full">
+    <div className="flex h-full flex-col items-center justify-around">
       <div className="text-4xl font-semibold">No activities... yet</div>
-      <Button title={"New activity"} onClick={() => handleNewActivityClick()} solid />
+      <Button
+        title={"New activity"}
+        onClick={() => dayViewNav.toCreateActivity()}
+        solid
+      />
     </div>
-  )
+  );
 }
 
 export default NoActivities;
