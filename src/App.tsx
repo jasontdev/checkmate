@@ -6,6 +6,10 @@ enum Views {
   DayView
 }
 
+type AppNav = {
+  toDayView: () => void;
+}
+
 function App() {
   const [day, setDay] = useState<Day>({
     id: -1,
@@ -29,4 +33,4 @@ function App() {
   }
 }
 
-export default App;
+export {App, type AppNav};
