@@ -8,6 +8,7 @@ import CreateActivity from "../components/CreateActivity.tsx";
 type DayViewProps = {
   day: Day;
   setDate: React.Dispatch<React.SetStateAction<string>>;
+  updateDay: () => void;
 };
 
 function addDaysToDateString(dateString: string, daysToAdd: number) {
@@ -22,7 +23,7 @@ type DayViewNav = {
   toCreateActivity: () => void;
 };
 
-function DayView({ day, setDate }: DayViewProps) {
+function DayView({ day, setDate, updateDay }: DayViewProps) {
   function onNextDateClick() {
     setDate(addDaysToDateString(day.date, 1));
   }
@@ -57,7 +58,7 @@ function DayView({ day, setDate }: DayViewProps) {
       }
 
       case MainComponent.CreateActivity: {
-        return <CreateActivity dayId={day.id} dayViewNav={dayViewNav} />;
+        return <CreateActivity dayId={day.id} dayViewNav={dayViewNav} updateDay={() => updateDay()} />;
       }
     }
   }

@@ -1,14 +1,14 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { DayView } from "./views/DayView";
-import {invoke} from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/tauri";
 
 enum Views {
-  DayView
+  DayView,
 }
 
 type AppNav = {
   toDayView: () => void;
-}
+};
 
 function App() {
   const [day, setDay] = useState<Day>({
@@ -20,17 +20,28 @@ function App() {
   const [currentView] = useState<Views>(Views.DayView);
 
   useEffect(() => {
-    invoke("get_day", {date}).then((day) => {
-      setDay(day as Day);
-    }).catch(error => console.log(error));
+    invoke("get_day", { date })
+      .then((day) => {
+        setDay(day as Day);
+      })
+      .catch((error) => console.log(error));
   }, [date]);
+
+  function updateDay() {
+    invoke("get_day", { date })
+      .then((day) => {
+        setDay(day as Day);
+      })
+      .catch((error) => console.log(error));
+  }
 
   if (currentView === Views.DayView) {
     return (
       <div className="h-screen w-screen">
-        <DayView day={day} setDate={setDate}/>
-      </div>)
+        <DayView day={day} setDate={setDate} updateDay={updateDay} />
+      </div>
+    );
   }
 }
 
-export {App, type AppNav};
+export { App, type AppNav };
