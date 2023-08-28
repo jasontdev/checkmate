@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DayView } from "./views/DayView";
-import { invoke } from "@tauri-apps/api/tauri";
-import { useDay } from "./hooks/useDay";
+import useBackendQuery from "./hooks/useBackendQuery";
 
 enum Views {
   DayView,
@@ -14,13 +13,19 @@ type AppNav = {
 function App() {
   const [date, setDate] = useState<string>(new Date(Date.now()).toDateString());
   const [currentView] = useState<Views>(Views.DayView);
-  
-  const day = useDay(date);
+
+  const mutationEvent = `day_${date.replace(/ /g, "_")}_updated`;
+
+  const dayQuery = useBackendQuery<Day>("get_day", { date }, mutationEvent);
 
   if (currentView === Views.DayView) {
     return (
       <div className="h-screen w-screen">
-        <DayView day={day} setDate={setDate} />
+        {dayQuery.data ? (
+          <DayView day={dayQuery.data} setDate={setDate} />
+        ) : (
+          <div />
+        )}
       </div>
     );
   }

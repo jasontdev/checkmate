@@ -22,7 +22,7 @@ type DayViewNav = {
   toCreateActivity: () => void;
 };
 
-function DayView({ day, setDate}: DayViewProps) {
+function DayView({ day, setDate }: DayViewProps) {
   function onNextDateClick() {
     setDate(addDaysToDateString(day.date, 1));
   }
@@ -57,7 +57,7 @@ function DayView({ day, setDate}: DayViewProps) {
       }
 
       case MainComponent.CreateActivity: {
-        return <CreateActivity dayViewNav={dayViewNav} day={day}  />;
+        return <CreateActivity dayViewNav={dayViewNav} day={day} />;
       }
     }
   }
