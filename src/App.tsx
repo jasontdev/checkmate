@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DayView } from "./views/DayView";
-import useBackendQuery from "./hooks/useBackendQuery";
+import { useQuery } from "./api/backend";
 
 enum Views {
   DayView,
@@ -16,7 +16,7 @@ function App() {
 
   const mutationEvent = `day_${date.replace(/ /g, "_")}_updated`;
 
-  const dayQuery = useBackendQuery<Day>("get_day", { date }, mutationEvent);
+  const dayQuery = useQuery<Day>("get_day", { date }, mutationEvent);
 
   if (currentView === Views.DayView) {
     return (
