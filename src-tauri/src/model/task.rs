@@ -10,7 +10,7 @@ pub struct Task {
     pub day_id: i64,
     pub description: String,
     pub project: Option<Project>,
-    pub task: Option<Function>,
+    pub function: Option<Function>,
 }
 
 impl Entity for Task {
@@ -24,7 +24,7 @@ impl Entity for Task {
             day_id: self.day_id,
             description: self.description.to_string(),
             project: None,
-            task: None,
+            function: None,
         })
     }
 }
