@@ -1,16 +1,17 @@
-use crate::model::function::Function;
+use crate::model::category::Category;
 use crate::model::project::Project;
 use crate::model::traits::Entity;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct Task {
     pub id: i64,
     pub day_id: i64,
     pub description: String,
     pub project: Option<Project>,
-    pub function: Option<Function>,
+    pub category: Option<Category>,
 }
 
 impl Entity for Task {
@@ -24,7 +25,7 @@ impl Entity for Task {
             day_id: self.day_id,
             description: self.description.to_string(),
             project: None,
-            function: None,
+            category: None,
         })
     }
 }

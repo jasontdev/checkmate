@@ -1,7 +1,7 @@
 import ActivityListItem from "./ActivityListItem";
 
 type ActivityListProps = {
-  activities: Activity[];
+  activities: Task[];
 };
 
 function ActivityList({ activities}: ActivityListProps) {

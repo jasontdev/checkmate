@@ -24,7 +24,7 @@ fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
         Ok(day) => Ok(Day {
             id: day.id,
             date: day.date,
-            activities: day.activities,
+            tasks: day.tasks,
         }),
         Err(error) => Err(error.to_string()),
     }
@@ -40,7 +40,7 @@ fn update_day(_app_state: State<AppState>, window: Window, day: Day) -> Result<D
             Day {
                 id: day.id,
                 date: day.date.clone(),
-                activities: day.activities.clone(),
+                tasks: day.tasks.clone(),
             },
         )
         .unwrap();
@@ -48,7 +48,7 @@ fn update_day(_app_state: State<AppState>, window: Window, day: Day) -> Result<D
     Ok(Day {
         id: day.id,
         date: day.date,
-        activities: day.activities,
+        tasks: day.tasks,
     })
 }
 

@@ -1,4 +1,3 @@
-use crate::model::function::Function;
 use crate::model::traits::Model;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
@@ -7,7 +6,6 @@ use serde::{Deserialize, Serialize};
 pub struct Project {
     pub id: i32,
     pub name: String,
-    pub functions: Vec<Function>,
 }
 
 impl Model for Project {

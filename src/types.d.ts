@@ -1,24 +1,23 @@
 type Day = {
   id: number;
   date: string;
-  activities: Activity[];
+  tasks: Task[];
 };
 
-type Activity = {
+type Task = {
   id: number;
   dayId: number;
   description: string;
   project: Project;
-  task: Task;
+  category: Category;
 };
 
 type Project = {
   id: number;
   name: string;
-  tasks: Task[];
 };
 
-type Task = {
+type Category = {
   id: number;
   name: string;
 };

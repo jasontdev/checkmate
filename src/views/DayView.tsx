@@ -49,8 +49,8 @@ function DayView({ day, setDate }: DayViewProps) {
   function renderMainComponent(mainComponent: MainComponent, day: Day) {
     switch (mainComponent) {
       case MainComponent.Activites: {
-        return day.activities.length > 0 ? (
-          <ActivityList activities={day.activities} />
+        return day.tasks.length > 0 ? (
+          <ActivityList activities={day.tasks} />
         ) : (
           <NoActivities dayViewNav={dayViewNav} />
         );

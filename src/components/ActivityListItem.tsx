@@ -1,15 +1,15 @@
 import Button from "../ui/Button";
 
 type ActivityListItemProps = {
-  activity: Activity;
+  activity: Task;
 };
 
 function ActivityListItem({ activity}: ActivityListItemProps) {
-  const { description, project, task } = activity;
+  const { description, project, category } = activity;
   return (
     <div className="flex-between flex w-full items-center justify-between px-2 py-1 even:bg-zinc-100">
       <div>
-        {project.name} - {task.name} - {description}
+        {project.name} - {category.name} - {description}
       </div>
       <div>
         <Button title={"Resume"} onClick={() => {console.log("Resume button clicked")}} />

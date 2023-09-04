@@ -3,13 +3,12 @@ use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct Function {
+pub struct Category {
     pub id: i32,
     pub name: String,
-    pub project_id: i32,
 }
 
-impl Model for Function {
+impl Model for Category {
     fn create_table(&self, connection: &Connection) -> Result<(), Error> {
         connection.execute(
             "CREATE TABLE function IF NOT EXISTS(

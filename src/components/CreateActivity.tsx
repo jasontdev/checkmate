@@ -1,4 +1,3 @@
-import { invoke } from "@tauri-apps/api";
 import Button from "../ui/Button";
 import Container from "../ui/Container";
 import { type DayViewNav } from "../views/DayView";
@@ -11,23 +10,22 @@ type CreateActivityProps = {
 };
 
 function CreateActivity({ dayViewNav, day }: CreateActivityProps) {
-  const newDay = useMutation<Day>("update_day");
+  const newDay = useMutation<{day: Day}>("update_day");
   const [description, setDescription] = useState("");
 
   function handleSaveButtonClick() {
     const newDayData: Day = {
         id: day.id,
         date: day.date,
-        activities: [...day.activities, { id: 0, dayId: day.id, description: description, project: {
+        tasks: [...day.tasks, { id: 0, dayId: day.id, description: description, project: {
             id: 0,
             name: "",
-            tasks: []
-        }, task: {
+        }, category: {
             id: 0,
             name: ""
         }}]
     }
-    newDay.mutate(newDayData);
+    newDay.mutate({day: newDayData});
   }
 
   return (

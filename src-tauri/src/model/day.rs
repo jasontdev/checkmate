@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 pub struct Day {
     pub id: i64,
     pub date: String,
-    pub activities: Vec<Task>,
+    pub tasks: Vec<Task>,
 }
 
 impl Day {
@@ -31,7 +31,7 @@ impl Day {
             Ok(Day {
                 id: row.get(0)?,
                 date: row.get(1)?,
-                activities: vec![],
+                tasks: vec![],
             })
         });
 
@@ -41,7 +41,7 @@ impl Day {
                 let new_day = Day {
                     id: 0,
                     date: date.to_string(),
-                    activities: vec![],
+                    tasks: vec![],
                 };
 
                 match new_day.create(connection) {
@@ -62,7 +62,7 @@ impl Entity for Day {
         Ok(Day {
             id: connection.last_insert_rowid(),
             date: self.date.to_string(),
-            activities: vec![],
+            tasks: vec![],
         })
     }
 }
