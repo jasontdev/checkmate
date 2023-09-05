@@ -14,10 +14,20 @@ pub struct Task {
     pub category: Option<Category>,
 }
 
+impl Task {
+    pub fn create_table(connection: &Connection) -> Result<(), Error> {
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, day_id INTEGER, description TEXT)",
+            (),
+        )?;
+        Ok(())
+    }
+}
+
 impl Entity for Task {
     fn create(&self, connection: &Connection) -> Result<Self, Error> {
         let mut statement = connection
-            .prepare("INSERT INTO task (day_id, description) VALUES (?1, ?2) RETURNING id")?;
+            .prepare("INSERT INTO task (day_id, description) VALUES (?1, ?2)")?;
         statement.execute((&self.day_id, &self.description))?;
 
         Ok(Task {

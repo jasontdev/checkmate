@@ -3,7 +3,7 @@ import DayNavBar from "../components/DayNavBar.tsx";
 import NoActivities from "../components/NoActivities.tsx";
 import React, { useState } from "react";
 import Container from "../ui/Container.tsx";
-import CreateActivity from "../components/CreateActivity.tsx";
+import CreateTask from "../components/CreateTask.tsx";
 
 type DayViewProps = {
   day: Day;
@@ -57,7 +57,7 @@ function DayView({ day, setDate }: DayViewProps) {
       }
 
       case MainComponent.CreateActivity: {
-        return <CreateActivity dayViewNav={dayViewNav} day={day} />;
+        return <CreateTask dayViewNav={dayViewNav} day={day} />;
       }
     }
   }

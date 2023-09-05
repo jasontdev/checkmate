@@ -34,6 +34,7 @@ fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
 fn update_day(_app_state: State<AppState>, window: Window, day: Day) -> Result<Day, String> {
     let event_name = format!("day_{}_updated", str::replace(&day.date, " ", "_"));
 
+    // TODO: actually update the database
     window
         .emit(
             &event_name,
@@ -54,12 +55,17 @@ fn update_day(_app_state: State<AppState>, window: Window, day: Day) -> Result<D
 
 #[tauri::command]
 fn create_tables(app_state: State<AppState>) -> Result<(), String> {
-    match Day::create_table(app_state.db.lock().unwrap().as_ref().unwrap()) {
-        Ok(_) => Ok(()),
-        Err(error) => Err(error.to_string()),
+    let connection = app_state.db.lock().unwrap();
+    if let Err(_) = Day::create_table(connection.as_ref().unwrap()) {
+        return Err("Error creating day table".to_string());
     }
+    if let Err(_) = Task::create_table(connection.as_ref().unwrap()) {
+        return Err("Error creating task table".to_string());
+    }
+    Ok(())
 }
 
+#[tauri::command]
 fn save_task(app_state: State<AppState>, task: Task) -> Result<Task, String> {
     let connection = app_state.db.lock().unwrap();
     match task.create(&connection.as_ref().unwrap()) {
@@ -73,7 +79,7 @@ fn main() -> Result<(), Error> {
         .manage(AppState {
             db: Default::default(),
         })
-        .invoke_handler(tauri::generate_handler![create_tables, get_day, update_day])
+        .invoke_handler(tauri::generate_handler![create_tables, get_day, update_day, save_task])
         .setup(|app| {
             let handle = app.handle();
             let app_state: State<AppState> = handle.state();
