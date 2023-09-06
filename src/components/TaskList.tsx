@@ -1,14 +1,14 @@
-import ActivityListItem from "./ActivityListItem";
+import TaskListItem from "./TaskListItem.tsx";
 
-type ActivityListProps = {
+type TaskListProps = {
   activities: Task[];
 };
 
-function ActivityList({ activities}: ActivityListProps) {
+function TaskList({ activities}: TaskListProps) {
   return (
     <div className="flex flex-col gap-1 p-2">
       {activities.map((activity) => (
-        <ActivityListItem
+        <TaskListItem
           key={activity.id}
           activity={activity}
         />
@@ -17,4 +17,4 @@ function ActivityList({ activities}: ActivityListProps) {
   );
 }
 
-export default ActivityList;
+export default TaskList;

@@ -10,7 +10,6 @@ type CreateTaskProps = {
 };
 
 function CreateTask({dayViewNav, day}: CreateTaskProps) {
-    const newDay = useMutation<{ task: Task }>("save_task");
     const [description, setDescription] = useState("");
 
     function handleSaveButtonClick() {
@@ -26,8 +25,9 @@ function CreateTask({dayViewNav, day}: CreateTaskProps) {
             },
             id: day.id
         }
-        newDay.mutate({task: newTask});
     }
+
+    console.log("updating...");
 
     return (
         <Container>
@@ -45,8 +45,6 @@ function CreateTask({dayViewNav, day}: CreateTaskProps) {
                         solid
                     />
                     <Button title={"Cancel"} onClick={() => dayViewNav.toActivities()}/>
-                    {newDay.isError ? <div>Error: {newDay.error}</div> : <div/>}
-                    {newDay.isSuccess ? <div>Success!</div> : <div/>}
                 </div>
             </div>
         </Container>

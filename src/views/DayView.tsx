@@ -1,4 +1,4 @@
-import ActivityList from "../components/ActivityList";
+import TaskList from "../components/TaskList.tsx";
 import DayNavBar from "../components/DayNavBar.tsx";
 import NoActivities from "../components/NoActivities.tsx";
 import React, { useState } from "react";
@@ -50,7 +50,7 @@ function DayView({ day, setDate }: DayViewProps) {
     switch (mainComponent) {
       case MainComponent.Activites: {
         return day.tasks.length > 0 ? (
-          <ActivityList activities={day.tasks} />
+          <TaskList activities={day.tasks} />
         ) : (
           <NoActivities dayViewNav={dayViewNav} />
         );

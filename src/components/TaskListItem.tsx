@@ -1,10 +1,10 @@
 import Button from "../ui/Button";
 
-type ActivityListItemProps = {
+type TaskListItemProps = {
   activity: Task;
 };
 
-function ActivityListItem({ activity}: ActivityListItemProps) {
+function TaskListItem({ activity}: TaskListItemProps) {
   const { description, project, category } = activity;
   return (
     <div className="flex-between flex w-full items-center justify-between px-2 py-1 even:bg-zinc-100">
@@ -18,4 +18,4 @@ function ActivityListItem({ activity}: ActivityListItemProps) {
   );
 }
 
-export default ActivityListItem;
+export default TaskListItem;

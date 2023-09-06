@@ -67,6 +67,7 @@ fn create_tables(app_state: State<AppState>) -> Result<(), String> {
 
 #[tauri::command]
 fn save_task(app_state: State<AppState>, task: Task) -> Result<Task, String> {
+    // TODO: send messages to update UI
     let connection = app_state.db.lock().unwrap();
     match task.create(&connection.as_ref().unwrap()) {
         Ok(task) => Ok(task),
