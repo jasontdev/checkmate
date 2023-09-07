@@ -26,8 +26,8 @@ impl Day {
     }
 
     pub fn find_by_date(connection: &Connection, date: String) -> Result<Day, Error> {
-        let mut day_query_statement = connection
-            .prepare("SELECT id, date FROM day WHERE date=(?)")?;
+        let mut day_query_statement =
+            connection.prepare("SELECT id, date FROM day WHERE date=(?)")?;
 
         day_query_statement.query_row([&date], |row| {
             Ok(Day {
@@ -61,7 +61,7 @@ impl Day {
                     date: day_query_result.date,
                     tasks,
                 })
-            },
+            }
             Err(_) => {
                 let new_day = Day {
                     id: 0,

@@ -15,17 +15,19 @@ function App() {
   const [date, setDate] = useState<string>(new Date(Date.now()).toDateString());
   const [currentView] = useState<Views>(Views.DayView);
 
-  const dayQuery = useQuery<Day, string>({queryKey: [`day_${date.replace(/ /g, " ")}`], queryFn: () => {
+  const dayQuery = useQuery<Day, string>({
+    queryKey: [`day_${date.replace(/ /g, " ")}`], queryFn: () => {
       return invoke('get_day', {date: date})
-    }} )
+    }
+  })
 
   if (currentView === Views.DayView) {
     return (
       <div className="h-screen w-screen">
-        {dayQuery.isSuccess ? <DayView day={dayQuery.data} setDate={setDate} /> : null}
+        {dayQuery.isSuccess ? <DayView day={dayQuery.data} setDate={setDate}/> : null}
       </div>
     );
   }
 }
 
-export { App, type AppNav };
+export {App, type AppNav};

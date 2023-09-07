@@ -44,8 +44,8 @@ impl Task {
 
 impl Entity for Task {
     fn create(&self, connection: &Connection) -> Result<Self, Error> {
-        let mut statement = connection
-            .prepare("INSERT INTO task (day_id, description) VALUES (?1, ?2)")?;
+        let mut statement =
+            connection.prepare("INSERT INTO task (day_id, description) VALUES (?1, ?2)")?;
         statement.execute((&self.day_id, &self.description))?;
 
         Ok(Task {

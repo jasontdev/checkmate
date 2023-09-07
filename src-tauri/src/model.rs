@@ -1,13 +1,8 @@
-mod task;
+mod category;
 mod day;
 mod project;
-mod category;
+mod task;
 pub(crate) mod traits;
 
 pub use day::Day;
 pub use task::Task;
-
-
-
-
-

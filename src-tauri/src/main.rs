@@ -80,7 +80,12 @@ fn main() -> Result<(), Error> {
         .manage(AppState {
             db: Default::default(),
         })
-        .invoke_handler(tauri::generate_handler![create_tables, get_day, update_day, save_task])
+        .invoke_handler(tauri::generate_handler![
+            create_tables,
+            get_day,
+            update_day,
+            save_task
+        ])
         .setup(|app| {
             let handle = app.handle();
             let app_state: State<AppState> = handle.state();
