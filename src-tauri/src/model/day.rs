@@ -25,18 +25,43 @@ impl Day {
         Ok(())
     }
 
-    pub fn find_or_create(connection: &Connection, date: String) -> Result<Day, Error> {
-        let mut statement = connection.prepare("SELECT id, date FROM day WHERE date=(?)")?;
-        let day = statement.query_row([&date], |row| {
+    pub fn find_by_date(connection: &Connection, date: String) -> Result<Day, Error> {
+        let mut day_query_statement = connection
+            .prepare("SELECT id, date FROM day WHERE date=(?)")?;
+
+        day_query_statement.query_row([&date], |row| {
             Ok(Day {
                 id: row.get(0)?,
                 date: row.get(1)?,
                 tasks: vec![],
             })
-        });
+        })
+    }
 
-        match day {
-            Ok(day) => Ok(day),
+    pub fn find_or_create(connection: &Connection, date: String) -> Result<Day, Error> {
+        // let mut statement = connection.prepare("SELECT day.id, day.date FROM day INNER JOIN task ON task.day_id = day.id WHERE date=(?)")?;
+        // let mut rows = statement.query([&date])?;
+        // while let Some(rows) = rows.next()? {
+        //     let row = rows.get(0)?;
+        //     println!("{}", row);
+        // }
+
+        // TODO: remove clone
+        let day_query_result = Day::find_by_date(&connection, date.clone());
+
+        match day_query_result {
+            Ok(day_query_result) => {
+                let tasks = match Task::find_all_by_date(&connection, date.clone()) {
+                    Ok(tasks) => tasks,
+                    Err(_) => vec![],
+                };
+
+                Ok(Day {
+                    id: day_query_result.id,
+                    date: day_query_result.date,
+                    tasks,
+                })
+            },
             Err(_) => {
                 let new_day = Day {
                     id: 0,

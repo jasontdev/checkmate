@@ -22,6 +22,24 @@ impl Task {
         )?;
         Ok(())
     }
+
+    pub fn find_all_by_date(connection: &Connection, date: String) -> Result<Vec<Task>, Error> {
+        let mut statement = connection.prepare("SELECT task.id, task.day_id, task.description FROM day INNER JOIN task ON task.day_id=day.id WHERE day.date=(?)")?;
+        let mut rows = statement.query([&date])?;
+
+        let mut tasks = Vec::new();
+        while let Some(row) = rows.next()? {
+            tasks.push(Task {
+                id: row.get(0)?,
+                day_id: row.get(1)?,
+                description: row.get(2)?,
+                project: None,
+                category: None,
+            })
+        }
+
+        Ok(tasks)
+    }
 }
 
 impl Entity for Task {

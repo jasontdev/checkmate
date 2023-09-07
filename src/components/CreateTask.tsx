@@ -1,8 +1,9 @@
 import Button from "../ui/Button";
 import Container from "../ui/Container";
 import {type DayViewNav} from "../views/DayView";
-import {useMutation} from "../api/backend";
 import {useState} from "react";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {invoke} from "@tauri-apps/api/tauri";
 
 type CreateTaskProps = {
     day: Day;
@@ -10,7 +11,17 @@ type CreateTaskProps = {
 };
 
 function CreateTask({dayViewNav, day}: CreateTaskProps) {
+    const queryClient = useQueryClient();
     const [description, setDescription] = useState("");
+    const task = useMutation({
+        mutationFn: (newTask: Task) => {
+            return invoke<Task>('save_task', {task: newTask});
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries([`day_${day.date.replace(/ /g, " ")}`])
+            dayViewNav.toActivities();
+        }
+    });
 
     function handleSaveButtonClick() {
         const newTask: Task = {
@@ -25,6 +36,8 @@ function CreateTask({dayViewNav, day}: CreateTaskProps) {
             },
             id: day.id
         }
+
+        task.mutate(newTask);
     }
 
     console.log("updating...");
@@ -46,6 +59,7 @@ function CreateTask({dayViewNav, day}: CreateTaskProps) {
                     />
                     <Button title={"Cancel"} onClick={() => dayViewNav.toActivities()}/>
                 </div>
+                {task.isSuccess ? <div>Success!</div> : <div>Error...</div>}
             </div>
         </Container>
     );
