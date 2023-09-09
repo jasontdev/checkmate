@@ -1,7 +1,7 @@
 import TaskList from "../components/TaskList.tsx";
 import DayNavBar from "../components/DayNavBar.tsx";
 import NoActivities from "../components/NoActivities.tsx";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Container from "../ui/Container.tsx";
 import CreateTask from "../components/CreateTask.tsx";
 
@@ -22,7 +22,7 @@ type DayViewNav = {
   toCreateActivity: () => void;
 };
 
-function DayView({ day, setDate }: DayViewProps) {
+function DayView({day, setDate}: DayViewProps) {
   function onNextDateClick() {
     setDate(addDaysToDateString(day.date, 1));
   }
@@ -50,14 +50,14 @@ function DayView({ day, setDate }: DayViewProps) {
     switch (mainComponent) {
       case MainComponent.Activites: {
         return day.tasks.length > 0 ? (
-          <TaskList activities={day.tasks} />
+          <TaskList activities={day.tasks}/>
         ) : (
-          <NoActivities dayViewNav={dayViewNav} />
+          <NoActivities dayViewNav={dayViewNav}/>
         );
       }
 
       case MainComponent.CreateActivity: {
-        return <CreateTask dayViewNav={dayViewNav} day={day} />;
+        return <CreateTask dayViewNav={dayViewNav} day={day}/>;
       }
     }
   }
@@ -76,4 +76,4 @@ function DayView({ day, setDate }: DayViewProps) {
   );
 }
 
-export { DayView, type DayViewNav };
+export {DayView, type DayViewNav};
