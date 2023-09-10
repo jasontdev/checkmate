@@ -1,6 +1,6 @@
 import TaskList from "../components/TaskList.tsx";
 import DayNavBar from "../components/DayNavBar.tsx";
-import NoActivities from "../components/NoActivities.tsx";
+import NoTasks from "../components/NoTasks.tsx";
 import React, {useState} from "react";
 import Container from "../ui/Container.tsx";
 import CreateTask from "../components/CreateTask.tsx";
@@ -18,8 +18,8 @@ function addDaysToDateString(dateString: string, daysToAdd: number) {
 }
 
 type DayViewNav = {
-  toActivities: () => void;
-  toCreateActivity: () => void;
+  toTasks: () => void;
+  toCreateTasks: () => void;
 };
 
 function DayView({day, setDate}: DayViewProps) {
@@ -32,37 +32,37 @@ function DayView({day, setDate}: DayViewProps) {
   }
 
   enum MainComponent {
-    Activites,
-    CreateActivity,
+    Tasks,
+    CreateTask,
   }
 
   const dayViewNav: DayViewNav = {
-    toActivities: () => {
-      setMainComponent(MainComponent.Activites);
+    toTasks: () => {
+      setMainComponent(MainComponent.Tasks);
     },
-    toCreateActivity: () => {
-      setMainComponent(MainComponent.CreateActivity);
+    toCreateTasks: () => {
+      setMainComponent(MainComponent.CreateTask);
     },
   };
 
   // TODO: make this a component
   function renderMainComponent(mainComponent: MainComponent, day: Day) {
     switch (mainComponent) {
-      case MainComponent.Activites: {
+      case MainComponent.Tasks: {
         return day.tasks.length > 0 ? (
-          <TaskList activities={day.tasks}/>
+          <TaskList tasks={day.tasks}/>
         ) : (
-          <NoActivities dayViewNav={dayViewNav}/>
+          <NoTasks dayViewNav={dayViewNav}/>
         );
       }
 
-      case MainComponent.CreateActivity: {
+      case MainComponent.CreateTask: {
         return <CreateTask dayViewNav={dayViewNav} day={day}/>;
       }
     }
   }
 
-  const [mainComponent, setMainComponent] = useState(MainComponent.Activites);
+  const [mainComponent, setMainComponent] = useState(MainComponent.Tasks);
 
   return (
     <Container>

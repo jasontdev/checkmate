@@ -19,7 +19,7 @@ function CreateTask({dayViewNav, day}: CreateTaskProps) {
         },
         onSuccess: () => {
             queryClient.invalidateQueries([`day_${day.date.replace(/ /g, " ")}`])
-            dayViewNav.toActivities();
+            dayViewNav.toTasks();
         }
     });
 
@@ -57,7 +57,7 @@ function CreateTask({dayViewNav, day}: CreateTaskProps) {
                         onClick={() => handleSaveButtonClick()}
                         solid
                     />
-                    <Button title={"Cancel"} onClick={() => dayViewNav.toActivities()}/>
+                    <Button title={"Cancel"} onClick={() => dayViewNav.toTasks()}/>
                 </div>
                 {task.isSuccess ? <div>Success!</div> : <div>Error...</div>}
             </div>
