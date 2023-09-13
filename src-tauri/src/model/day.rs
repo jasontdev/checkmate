@@ -80,8 +80,7 @@ impl Day {
 
 impl Entity for Day {
     fn create(&self, connection: &Connection) -> Result<Self, Error> {
-        let mut statement =
-            connection.prepare("INSERT INTO day (date) VALUES (?1) RETURNING id")?;
+        let mut statement = connection.prepare("INSERT INTO day (date) VALUES (?1)")?;
         statement.execute([&self.date])?;
 
         Ok(Day {

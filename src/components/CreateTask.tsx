@@ -1,6 +1,5 @@
 import Button from "../ui/Button";
 import Container from "../ui/Container";
-import {type DayViewNav} from "../views/DayView";
 import {useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {invoke} from "@tauri-apps/api/tauri";

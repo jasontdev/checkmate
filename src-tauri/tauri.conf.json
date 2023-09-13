@@ -59,7 +59,8 @@
         "height": 600,
         "resizable": true,
         "title": "Checkmate",
-        "width": 800
+        "width": 800,
+        "url": "day"
       }
     ]
   }
