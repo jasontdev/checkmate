@@ -15,10 +15,9 @@ function DayView() {
   const { day } = useLoaderData() as { day: Day };
   const navigate = useNavigate();
 
-  function increaseDate(date: string, n: number) {
-    const currentDay = new Date(date);
-    const nextDay = new Date();
-    nextDay.setDate(currentDay.getDate() + n);
+  function changeDate(date: string, n: number) {
+    const nextDay = new Date(date);
+    nextDay.setDate(nextDay.getDate() + n);
     return nextDay.toISOString().split("T")[0];
   }
 
@@ -27,8 +26,8 @@ function DayView() {
       <Container>
         <DayNavBar
           date={day.date}
-          onNextDateClick={() => navigate("/day/" + increaseDate(date, 1))}
-          onPrevDateClick={() => navigate("/day/" + increaseDate(date, -1))}
+          onNextDateClick={() => navigate("/day/" + changeDate(date, 1))}
+          onPrevDateClick={() => navigate("/day/" + changeDate(date, -1))}
         />
         {day.tasks.length > 0 ? <TaskList tasks={day.tasks} /> : <NoTasks />}
       </Container>
