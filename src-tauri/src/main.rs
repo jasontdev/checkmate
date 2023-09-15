@@ -1,12 +1,10 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use model::traits::Entity;
 use rusqlite::{Connection, Error};
-use tauri::Window;
 use tauri::{Manager, State};
 
-use model::Day;
+use model::traits::Entity;
 use model::Task;
 
 mod model;
@@ -16,49 +14,8 @@ pub struct AppState {
 }
 
 #[tauri::command]
-fn get_day(app_state: State<AppState>, date: String) -> Result<Day, String> {
-    match Day::find_or_create(
-        app_state.db.lock().unwrap().as_ref().unwrap(),
-        date.to_string(),
-    ) {
-        Ok(day) => Ok(Day {
-            id: day.id,
-            date: day.date,
-            tasks: day.tasks,
-        }),
-        Err(error) => Err(error.to_string()),
-    }
-}
-
-#[tauri::command]
-fn update_day(_app_state: State<AppState>, window: Window, day: Day) -> Result<Day, String> {
-    let event_name = format!("day_{}_updated", str::replace(&day.date, " ", "_"));
-
-    // TODO: actually update the database
-    window
-        .emit(
-            &event_name,
-            Day {
-                id: day.id,
-                date: day.date.clone(),
-                tasks: day.tasks.clone(),
-            },
-        )
-        .unwrap();
-
-    Ok(Day {
-        id: day.id,
-        date: day.date,
-        tasks: day.tasks,
-    })
-}
-
-#[tauri::command]
 fn create_tables(app_state: State<AppState>) -> Result<(), String> {
     let connection = app_state.db.lock().unwrap();
-    if let Err(_) = Day::create_table(connection.as_ref().unwrap()) {
-        return Err("Error creating day table".to_string());
-    }
     if let Err(_) = Task::create_table(connection.as_ref().unwrap()) {
         return Err("Error creating task table".to_string());
     }
@@ -80,12 +37,7 @@ fn main() -> Result<(), Error> {
         .manage(AppState {
             db: Default::default(),
         })
-        .invoke_handler(tauri::generate_handler![
-            create_tables,
-            get_day,
-            update_day,
-            save_task
-        ])
+        .invoke_handler(tauri::generate_handler![create_tables, save_task])
         .setup(|app| {
             let handle = app.handle();
             let app_state: State<AppState> = handle.state();
