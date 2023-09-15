@@ -4,7 +4,6 @@
 use rusqlite::{Connection, Error};
 use tauri::{Manager, State};
 
-use model::traits::Entity;
 use model::Task;
 
 mod model;
@@ -22,22 +21,12 @@ fn create_tables(app_state: State<AppState>) -> Result<(), String> {
     Ok(())
 }
 
-#[tauri::command]
-fn save_task(app_state: State<AppState>, task: Task) -> Result<Task, String> {
-    // TODO: send messages to update UI
-    let connection = app_state.db.lock().unwrap();
-    match task.create(&connection.as_ref().unwrap()) {
-        Ok(task) => Ok(task),
-        Err(error) => Err(error.to_string()),
-    }
-}
-
 fn main() -> Result<(), Error> {
     tauri::Builder::default()
         .manage(AppState {
             db: Default::default(),
         })
-        .invoke_handler(tauri::generate_handler![create_tables, save_task])
+        .invoke_handler(tauri::generate_handler![create_tables])
         .setup(|app| {
             let handle = app.handle();
             let app_state: State<AppState> = handle.state();
