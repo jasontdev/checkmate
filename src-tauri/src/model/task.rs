@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use rusqlite::{Connection, Error};
 use serde::{Deserialize, Serialize};
 
-use crate::model::TimeBlock;
+use crate::model::{NewTask, TimeBlock};
 use crate::model::traits::Entity;
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -23,17 +23,17 @@ impl Task {
         Ok(())
     }
 
-    fn create(&self, connection: &Connection) -> Result<Self, Error> {
+    fn create(connection: &Connection, new_task: &NewTask) -> Result<Self, Error> {
         let mut stmt = connection.prepare("INSERT
         INTO
         task(description)
         VALUES(?1)
         ")?;
-        stmt.execute([&self.description])?;
+        stmt.execute([&new_task.description])?;
 
         Ok(Task {
             id: connection.last_insert_rowid(),
-            description: self.description.to_string(),
+            description: new_task.description.to_string(),
             time_blocks: vec![],
         })
     }
