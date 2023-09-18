@@ -27,7 +27,7 @@ impl TimeBlock {
     }
     pub fn create_table(connection: &Connection) -> Result<(), Error> {
         connection.execute(
-            "CREATE TABLE IF NOT EXISTS time_block (id INTEGER PRIMARY KEY, task_id INTEGER, start TEXT, finish TEXT)",
+            "CREATE TABLE IF NOT EXISTS time_block (id INTEGER PRIMARY KEY, task_id INTEGER, start TEXT, finish TEXT, FOREIGN KEY(task_id) REFERENCES task(id))",
             (),
         )?;
         Ok(())
