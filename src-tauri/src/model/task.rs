@@ -40,7 +40,8 @@ impl Task {
 
     pub fn find_all_by_date(connection: &Connection, date: String) -> Result<Vec<Task>, Error> {
         let mut stmt =
-            connection.prepare("SELECT task.id, task.description, time_block.id AS time_block_id, time_block.start, time_block.finish FROM task JOIN time_block ON DATE(time_block.start)=?1")?;
+            connection.prepare("SELECT task.id, task.description, time_block.id AS time_block_id, \
+            time_block.start, time_block.finish FROM task JOIN time_block ON DATE(time_block.start)=?1")?;
         let task_time_block_iter = stmt.query_map([date], |row| {
             Ok((Task {
                 id: row.get(0)?,
@@ -95,6 +96,7 @@ mod tests {
 
         assert_eq!(tasks.len(), 1);
         assert_eq!(tasks.get(0).unwrap().time_blocks.len(), 3);
+        assert_eq!(tasks.get(0).unwrap().time_blocks.get(0).unwrap().start, Some("2023-09-16T23:54:29+00:00".to_string()));
 
         Ok(())
     }

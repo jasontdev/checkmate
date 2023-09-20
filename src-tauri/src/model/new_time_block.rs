@@ -4,6 +4,6 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct NewTimeBlock {
     pub task_id: i64,
-    pub start: String,
-    pub finish: String,
+    pub start: Option<String>,
+    pub finish: Option<String>,
 }
