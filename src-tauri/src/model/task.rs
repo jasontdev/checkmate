@@ -40,8 +40,10 @@ impl Task {
 
     pub fn find_all_by_date(connection: &Connection, date: String) -> Result<Vec<Task>, Error> {
         let mut stmt =
+            // connection.prepare("SELECT task.id, task.description, time_block.id AS time_block_id, \
+            // time_block.start, time_block.finish FROM task JOIN time_block ON DATE(time_block.start)=?1")?;
             connection.prepare("SELECT task.id, task.description, time_block.id AS time_block_id, \
-            time_block.start, time_block.finish FROM task JOIN time_block ON DATE(time_block.start)=?1")?;
+            datetime(time_block.start), datetime(time_block.finish) FROM task JOIN time_block ON time_block.task_id=task.id AND datetime(time_block.start) BETWEEN datetime(?1) AND datetime(?1, \"+24 hour\")")?;
         let task_time_block_iter = stmt.query_map([date], |row| {
             Ok((Task {
                 id: row.get(0)?,
@@ -87,16 +89,16 @@ mod tests {
         TimeBlock::create_table(&connection)?;
 
         connection.execute("INSERT INTO task (id, description) VALUES (?1, ?2)", (1, "Test task 1"))?;
-        connection.execute("INSERT INTO time_block (id, task_id, start, finish) VALUES (?1, ?2, ?3, ?4)", (1, 1, "2023-09-16T23:54:29+00:00", ""))?;
-        connection.execute("INSERT INTO time_block (id, task_id, start, finish) VALUES (?1, ?2, ?3, ?4)", (2, 1, "2023-09-16T23:54:29", ""))?;
-        connection.execute("INSERT INTO time_block (id, task_id, start, finish) VALUES (?1, ?2, ?3, ?4)", (3, 1, "2023-09-16T23:54:29Z", ""))?;
-        connection.execute("INSERT INTO time_block (id, task_id, start, finish) VALUES (?1, ?2, ?3, ?4)", (4, 1, "2023-09-15T23:54:29+00:00", ""))?;
+        connection.execute("INSERT INTO time_block (id, task_id, start) VALUES (?1, ?2, datetime(?3))", (1, 1, "2023-09-16T00:00:00+00:00"))?;
+        connection.execute("INSERT INTO time_block (id, task_id, start) VALUES (?1, ?2, datetime(?3))", (2, 1, "2023-09-16T12:00:00"))?;
+        connection.execute("INSERT INTO time_block (id, task_id, start) VALUES (?1, ?2, datetime(?3))", (3, 1, "2023-09-16T10:00:00+10:00"))?;
+        connection.execute("INSERT INTO time_block (id, task_id, start) VALUES (?1, ?2, datetime(?3))", (4, 1, "2023-09-15T23:54:29+00:00"))?;
 
-        let tasks = Task::find_all_by_date(&connection, "2023-09-16".to_string())?;
+        let tasks = Task::find_all_by_date(&connection, "2023-09-16T00:00:00+00:00".to_string())?;
 
         assert_eq!(tasks.len(), 1);
         assert_eq!(tasks.get(0).unwrap().time_blocks.len(), 3);
-        assert_eq!(tasks.get(0).unwrap().time_blocks.get(0).unwrap().start, Some("2023-09-16T23:54:29+00:00".to_string()));
+        assert_eq!(tasks.get(0).unwrap().time_blocks.get(2).unwrap().start, Some("2023-09-16 00:00:00".to_string()));
 
         Ok(())
     }
