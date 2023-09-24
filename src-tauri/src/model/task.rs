@@ -17,13 +17,13 @@ pub struct Task {
 impl Task {
     pub fn create_table(connection: &Connection) -> Result<(), Error> {
         connection.execute(
-            "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, date TEXT, description TEXT)",
+            "CREATE TABLE IF NOT EXISTS task(id INTEGER PRIMARY KEY, description TEXT)",
             (),
         )?;
         Ok(())
     }
 
-    fn create(connection: &Connection, new_task: &NewTask) -> Result<Self, Error> {
+    fn create(connection: &Connection, new_task: &NewTask) -> Result<Task, Error> {
         let mut stmt = connection.prepare("INSERT
         INTO
         task(description)
@@ -36,6 +36,24 @@ impl Task {
             description: new_task.description.to_string(),
             time_blocks: vec![],
         })
+    }
+
+    fn update(connection: &Connection, task: &Task) -> Result<Task, Error> {
+        let mut stmt = connection.prepare("UPDATE task SET description=?1 WHERE task.id=?2")?;
+        stmt.execute((&task.description, &task.id))?;
+
+        Ok(Task {
+            id: task.id,
+            description: "".to_string(),
+            time_blocks: task.time_blocks.clone(), // TODO: should be updatable?
+        })
+    }
+
+    fn delete(connection: &Connection, task: &Task) -> Result<(), Error> {
+        connection.execute("DELETE FROM time_block WHERE task_id=?1; DELETE FROM task WHERE id=?1", [&task.id])?;
+        connection.execute("DELETE FROM task WHERE id=?1", [&task.id])?;
+
+        Ok(())
     }
 
     pub fn find_all_by_date(connection: &Connection, date: String) -> Result<Vec<Task>, Error> {
@@ -78,7 +96,6 @@ impl Entity for Task {}
 
 mod tests {
     use rusqlite::{Connection, Error};
-
     use crate::model::{Task, TimeBlock};
 
     #[test]
@@ -99,6 +116,46 @@ mod tests {
         assert_eq!(tasks.len(), 1);
         assert_eq!(tasks.get(0).unwrap().time_blocks.len(), 3);
         assert_eq!(tasks.get(0).unwrap().time_blocks.get(2).unwrap().start, Some("2023-09-16 00:00:00".to_string()));
+
+        Ok(())
+    }
+
+    #[test]
+    fn delete() -> Result<(), Error> {
+        let connection = Connection::open_in_memory().expect("DB connection error:");
+
+        Task::create_table(&connection)?;
+        TimeBlock::create_table(&connection)?;
+
+        let task = Task {
+            id: 1,
+            description: "Test task 1".to_string(),
+            time_blocks: vec![],
+        };
+
+        connection.execute("INSERT INTO task (id, description) VALUES (?1, ?2)", (&task.id, &task.description))?;
+        connection.execute("INSERT INTO time_block (task_id) VALUES (?1)", [&task.id])?;
+        connection.execute("INSERT INTO time_block (task_id) VALUES (?1)", [&task.id])?;
+        connection.execute("INSERT INTO time_block (task_id) VALUES (?1)", [&task.id])?;
+        connection.execute("INSERT INTO time_block (task_id) VALUES (?1)", [&task.id])?;
+
+        Task::delete(&connection, &task)?;
+        let mut task_count_stmt = connection.prepare("SELECT COUNT(*) FROM task")?;
+        let mut time_block_count_stmt = connection.prepare("SELECT COUNT(*) FROM time_block")?;
+
+        struct Count {
+            i: i32,
+        }
+
+        let tasks = task_count_stmt.query_row([], |row| Ok(Count {
+            i: row.get(0)?,
+        }))?;
+        let time_blocks = time_block_count_stmt.query_row([], |row| Ok(Count {
+            i: row.get(0)?,
+        }))?;
+
+        assert_eq!(tasks.i, 0);
+        assert_eq!(time_blocks.i, 0);
 
         Ok(())
     }
