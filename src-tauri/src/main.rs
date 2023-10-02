@@ -1,12 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod task;
+mod time_block;
+
 use rusqlite::{Connection, Error};
+use task::Task;
 use tauri::{Manager, State};
-
-use model::Task;
-
-mod model;
 
 pub struct AppState {
     pub(crate) db: std::sync::Mutex<Option<Connection>>,
