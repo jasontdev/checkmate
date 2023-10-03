@@ -4,8 +4,8 @@
 mod task;
 mod time_block;
 
+use app;
 use rusqlite::{Connection, Error};
-use task::Task;
 use tauri::{Manager, State};
 
 pub struct AppState {
@@ -15,7 +15,7 @@ pub struct AppState {
 #[tauri::command]
 fn create_tables(app_state: State<AppState>) -> Result<(), String> {
     let connection = app_state.db.lock().unwrap();
-    if let Err(_) = Task::create_table(connection.as_ref().unwrap()) {
+    if let Err(_) = app::create_tables(connection.as_ref().unwrap()) {
         return Err("Error creating task table".to_string());
     }
     Ok(())
