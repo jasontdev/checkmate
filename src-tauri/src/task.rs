@@ -57,7 +57,7 @@ impl Task {
         })
     }
 
-    fn delete(connection: &Connection, task: &Task) -> Result<(), Error> {
+    pub fn delete(connection: &Connection, task: &Task) -> Result<(), Error> {
         connection.execute(
             "DELETE FROM time_block WHERE task_id=?1; DELETE FROM task WHERE id=?1",
             [&task.id],
