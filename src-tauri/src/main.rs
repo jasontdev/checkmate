@@ -8,29 +8,32 @@ use app;
 use rusqlite::{Connection, Error};
 use tauri::{Manager, State};
 
-pub struct AppState {
-    pub(crate) db: std::sync::Mutex<Option<Connection>>,
+pub struct DBMutex(std::sync::Mutex<Option<Connection>>);
+
+fn db_wrapper<T>(db_mutex: &DBMutex, f: fn(&Connection) -> Result<T, Error>) -> Result<T, Error> {
+    let mutex_guard = db_mutex.0.lock().expect("DB connection mutex poisoned");
+    let connection = mutex_guard
+        .as_ref()
+        .expect("Could not obtain DB connection");
+    f(connection)
 }
 
 #[tauri::command]
-fn create_tables(app_state: State<AppState>) -> Result<(), String> {
-    let connection = app_state.db.lock().unwrap();
-    if let Err(_) = app::create_tables(connection.as_ref().unwrap()) {
-        return Err("Error creating task table".to_string());
+fn create_tables(db_mutex: State<DBMutex>) -> Result<(), String> {
+    match db_wrapper::<()>(&db_mutex, app::create_tables) {
+        Ok(_) => Ok(()),
+        Err(_) => Err("Could not create database tables".to_string()),
     }
-    Ok(())
 }
 
 fn main() -> Result<(), Error> {
     tauri::Builder::default()
-        .manage(AppState {
-            db: Default::default(),
-        })
+        .manage(DBMutex(Default::default()))
         .invoke_handler(tauri::generate_handler![create_tables])
         .setup(|app| {
             let handle = app.handle();
-            let app_state: State<AppState> = handle.state();
-            *app_state.db.lock().unwrap() =
+            let connection: State<DBMutex> = handle.state();
+            *connection.0.lock().unwrap() =
                 Some(Connection::open("checkmate.db").expect("Database:"));
             Ok(())
         })
