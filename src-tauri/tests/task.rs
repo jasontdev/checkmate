@@ -1,10 +1,10 @@
-use app::task::Task;
-use app::time_block::TimeBlock;
+use app::task::{NewTask, Task};
+use app::time_block::{NewTimeBlock, TimeBlock};
 use rusqlite::{Connection, Error};
 
 #[test]
 fn find_all_by_date_test() -> Result<(), Error> {
-    let connection = Connection::open_in_memory().expect("DB connection error:");
+    let connection = Connection::open_in_memory()?;
 
     Task::create_table(&connection)?;
     TimeBlock::create_table(&connection)?;
@@ -44,7 +44,7 @@ fn find_all_by_date_test() -> Result<(), Error> {
 
 #[test]
 fn delete() -> Result<(), Error> {
-    let connection = Connection::open_in_memory().expect("DB connection error:");
+    let connection = Connection::open_in_memory()?;
 
     Task::create_table(&connection)?;
     TimeBlock::create_table(&connection)?;
@@ -79,4 +79,36 @@ fn delete() -> Result<(), Error> {
     assert_eq!(time_blocks.i, 0);
 
     Ok(())
+}
+
+#[test]
+fn create() -> Result<(), Error> {
+    let connection = Connection::open_in_memory()?;
+
+    Task::create_table(&connection)?;
+    TimeBlock::create_table(&connection)?;
+
+    let test_string = "Feed the cat";
+    Task::create(
+        &connection,
+        &NewTask {
+            description: test_string.to_string(),
+        },
+    )?;
+
+    let mut task_stmt = connection.prepare(
+        format!(
+            "SELECT * FROM task WHERE task.description=\"{}\"",
+            test_string
+        )
+        .as_str(),
+    )?;
+
+    let row = task_stmt
+        .query_row([], |row| row.get::<usize, String>(1))
+        .unwrap();
+
+    assert_eq!(row, test_string.to_string());
+
+    return Ok(());
 }

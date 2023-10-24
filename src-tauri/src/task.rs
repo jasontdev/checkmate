@@ -9,7 +9,6 @@ use crate::time_block::TimeBlock;
 #[serde(rename_all = "camelCase")]
 pub struct NewTask {
     pub description: String,
-    pub time_blocks: Vec<TimeBlock>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -29,7 +28,7 @@ impl Task {
         Ok(())
     }
 
-    fn create(connection: &Connection, new_task: &NewTask) -> Result<Task, Error> {
+    pub fn create(connection: &Connection, new_task: &NewTask) -> Result<Task, Error> {
         let mut stmt = connection.prepare(
             "INSERT
         INTO
@@ -46,7 +45,7 @@ impl Task {
         })
     }
 
-    fn update(connection: &Connection, task: &Task) -> Result<Task, Error> {
+    pub fn update(connection: &Connection, task: &Task) -> Result<Task, Error> {
         let mut stmt = connection.prepare("UPDATE task SET description=?1 WHERE task.id=?2")?;
         stmt.execute((&task.description, &task.id))?;
 
