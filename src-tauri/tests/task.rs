@@ -112,3 +112,31 @@ fn create() -> Result<(), Error> {
 
     return Ok(());
 }
+
+#[test]
+fn update() -> Result<(), Error> {
+    let connection = Connection::open_in_memory()?;
+
+    Task::create_table(&connection)?;
+    TimeBlock::create_table(&connection)?;
+
+    let mut create_task_stmt =
+        connection.prepare("INSERT INTO task (id, description) VALUES(?1, ?2);")?;
+    create_task_stmt.execute((1, "original test description".to_string()))?;
+
+    let updated_task = Task {
+        id: 1,
+        description: "new test description".to_string(),
+        time_blocks: vec![],
+    };
+
+    Task::update(&connection, &updated_task)?;
+    let description =
+        connection.query_row("SELECT description FROM task WHERE task.id=1", (), |row| {
+            row.get::<usize, String>(0)
+        })?;
+
+    assert_eq!(description, "new test description");
+
+    return Ok(());
+}
