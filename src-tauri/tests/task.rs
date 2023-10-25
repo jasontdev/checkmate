@@ -1,5 +1,5 @@
 use app::task::{NewTask, Task};
-use app::time_block::{NewTimeBlock, TimeBlock};
+use app::time_block::TimeBlock;
 use rusqlite::{Connection, Error};
 
 #[test]
